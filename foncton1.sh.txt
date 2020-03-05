@@ -1,0 +1,160 @@
+menu ()
+{
+zenity --text="Choose a browser to launch:" \
+--button=gtk-cancel:1 \
+--button="Chromium":2 \
+--button="Firefox":3 \
+--button="Dillo":4
+cat << EOF
+----------------------------------------------------
+               B I E N V E N U E                    
+----------------------------------------------------
+1-  Lister les differentes interfaces réseaux  
+    Sauvegarder la configuration d'une interface  
+
+2- Désactiver le service NetworkManager 
+   Configurer manuellement de l'adresse ip , masque et la passerelle par défaut 
+   Configurer dynamiquement d'une interface 
+
+3- Afficher le help 
+
+0- Quitter !
+ ----------------------------------------------------
+EOF
+}
+
+
+menu1 ()
+{
+cat << EOF
+-------------------------------------
+lister des interfaces réseaux
+-------------------------------------
+
+1- Lister les differentes interfaces réseaux 
+
+2- Sauvegarder la configuration d'une interface 
+
+3- retour 
+--------------------------------------
+EOF
+}
+
+menu2 ()
+{
+cat << EOF
+-------------------------------------
+la configuration d'une interface
+-------------------------------------
+
+1-Désactiver le service NetworkManager 
+
+2-Configurer manuellement de l'adresse ip , masque et la passerelle par défaut 
+
+3-Configurer dynamiquement d'une interface
+
+4-retour
+-------------------------------------
+EOF
+}
+
+funct1 ()
+{
+ls /sys/class/net
+zenity --info --text "les interfaces sont : lo ens33"
+}
+
+
+funct2 ()
+{
+ echo "donnez le nom de l interface : "
+ read $i
+ if [[ $i="ens33" ]]; then 
+ echo " interface : $2"
+ ifconfig ens33 >> interface_ens33 
+ gedit interface_ens33
+ fi
+
+ if [[ $i="lo" ]]; then 
+ ifconfig lo >> interface_lo 
+ gedit interface_lo
+ fi
+}
+
+
+funct3 ()
+{
+systemctl stop networking
+systemctl status networking
+}
+
+funct44 ()
+{
+#sudo su
+sudo ifconfig $1 192.0.0.0 netmask 255.255.0.0 broadcast 192.0.0.0
+route add default gw 30.0.01
+route -n
+service networking restart
+ifconfig $1
+}
+
+
+
+function4 ()
+{
+nano /etc/network/interfaces
+service networking restart
+ifconfig $1
+}
+
+manuel ()
+{
+echo -n "Nom de l'interface Ethernet:"
+		read interface
+		echo -n "Adresse IP:"
+		read ip_add
+		echo -n "Masque:"
+		read netmask
+		echo -n "Passerelle:"
+		read gateway
+		echo -n "Serveur DNS:"
+		read nameserver
+
+
+echo " 
+## Configuration de $interface en mode Statique
+auto $interface
+iface $interface inet static
+	address $ip_add
+	netmask $netmask
+	gateway $gateway
+	dns-nameservers $nameserver" >> /etc/network/interfaces
+
+	## Si la dernière commande est correctement exécutée, on affiche
+
+		if [ $? = "0" ]; then
+			echo "Les données de configuration ont été écrites avec succès"
+			echo "Redémarrage du service..."
+			sleep 1
+		fi
+	
+	## On envoie également le DNS dans le resolv.conf
+
+		echo $nameserver >> /etc/resolv.conf
+
+
+		cat /etc/network/interfaces
+}
+
+
+
+funct6 ()
+{
+
+zenity --info --title="HELP" --text "Lister les differentes interfaces réseaux : -l                       
+Sauvegarder la configuration d'une interface :  -s
+Désactiver le service NetworkManager : -d
+Configurer manuellement de l'adresse ip , masque et la passerelle par défaut :  -c
+Configurer dynamiquement d'une interface : -d
+Afficher le help  -h"
+}

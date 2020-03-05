@@ -1,0 +1,108 @@
+#!/bin/bash
+source function1.sh
+zenity --question --text "bienvenue a notre application " --ok-label "entrez" --cancel-label "quittez"
+if [ $? == 1 ]; then exit; fi
+
+x=1
+while (($x!=0))
+do
+
+clear
+
+     menu
+
+	choix=$(zenity --entry --title="Commandes" --text="Tapez votre option"
+
+)
+case $choix in
+
+
+1)            
+   		clear
+    menu1
+
+ choix_1=$(zenity --entry --title="Commandes" --text="Tapez votre option"
+
+)
+
+case $choix_1 in
+-l)
+
+cat << EOF
+-------------------------------------
+les differentes interfaces réseaux
+-------------------------------------
+EOF
+	   funct1 ;;	
+	
+-s)
+  cat << EOF
+-------------------------------------
+la configuration d'une interface
+-------------------------------------
+   
+EOF
+        funct2 $i ;;
+3)$1
+  ;;
+esac 
+
+;;
+
+
+2)
+   		clear
+   menu2
+
+ choix_2=$(zenity --entry --title="Commandes" --text="Tapez votre option"
+
+)
+
+case $choix_2 in
+
+-d)
+     cat << EOF
+-------------------------------------
+Désactivation du service NetworkManager
+------------------------------------- 
+EOF
+   funct3  ;;
+
+-c) 
+  cat << EOF
+------------------------------------------------------------------------------
+Configuration manuellement de l'adresse ip , masque et la passerelle par défaut
+-------------------------------------------------------------------------------
+EOF
+
+  funct44 $1 ;;
+
+-d)
+  cat << EOF
+-------------------------------------
+Configureation dynamiquement d'une interface
+-------------------------------------
+EOF
+funct5 $1 ;;
+
+4) $1;;
+esac 
+;;
+
+3)
+  cat << EOF
+-------------------------------------
+HELP
+-------------------------------------
+EOF
+funct6  ;;
+
+0)
+x=0 ;;
+
+*)
+zenity --error --text="erreur, essayez option 3" ;;
+
+esac 
+
+done
